@@ -112,14 +112,10 @@ export function getChartScale (
   let min: BigNumber = BigNumber(0)
 
   function countDegree (estep: BigNumber) {
-    //这里的parseInt是我无意中写出来的，本来我是想对maxi使用Math.floor，对mini使用Math.ceil的。这样能向下取到邻近的一格，不过后面发现用parseInt好像画出来图的比较好看
-    // if(maxValue===0) max = 0
-    // max = parseInt(maxValue/estep+1) * estep
     max =
       maxValue.comparedTo(0) === 0
         ? BigNumber(0)
         : estep.times(parseInt(maxValue.div(estep).plus(1).toNumber() + '')) //最终效果是当max/estep属于(-1,Infinity)区间时，向上取1格，否则取2格。
-    // min = parseInt(minValue/estep-1) * estep
     min =
       minValue.comparedTo(0) === 0
         ? BigNumber(0)
@@ -152,7 +148,6 @@ export function getChartScale (
 
     outter: do {
       //计算模拟的实际分段数
-      // tempSplitNumber = Math.round((max-min)/estep)
       tempSplitNumber = Math.round(max.minus(min).div(estep!).toNumber())
       //当趋势单调性发生变化时可能出现死循环，需要进行校正
       if ((i - lastIndex) * (tempSplitNumber - splitNumber) < 0) {
@@ -160,7 +155,6 @@ export function getChartScale (
         //此处的校正基于合理的均匀的魔数数组，即tempSplitNumber和splitNumber的差值较小如1和2，始终取大刻度
         while (tempSplitNumber < splitNumber) {
           //让maxi或mini增大或减少一个estep直到取到理想分段数
-          //  if((min-minValue)<=(max-maxValue)&&min!==0||max===0)
           if (
             ([0, -1].includes(
               min.minus(minValue).comparedTo(max.minus(maxValue))
@@ -169,10 +163,8 @@ export function getChartScale (
             max.comparedTo(0) === 0
           ) {
             //在尽量保留0刻度的前提下，让更接近最值的一边扩展一个刻度
-            // min-=estep
             min = min.minus(estep)
           } else {
-            // max+=estep
             max = max.plus(estep)
           }
           tempSplitNumber++
@@ -188,10 +180,8 @@ export function getChartScale (
       lastIndex = i
       //尝试取符合趋势的邻近魔数
       if (tempSplitNumber > splitNumber) {
-        // estep = magic[++i]*multiple
         estep = multiple.times(magic[++i])
       } else {
-        // estep = magic[--i]*multiple
         estep = multiple.times(magic[--i])
       }
       //重新计算刻度
@@ -199,7 +189,6 @@ export function getChartScale (
     } while (tempSplitNumber !== splitNumber)
   }
   // 计算刻度间隔
-  // const interval = (max-min)/splitNumber
   const intervalNum = max.minus(min).div(splitNumber).toNumber()
   // 处理interval格式(避免刻度间隔小数位长度过长)
   const { formatNumber: formatInterval, power: intervelPower } =
