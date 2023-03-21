@@ -148,7 +148,7 @@ export function getChartScale (
 
     outter: do {
       //计算模拟的实际分段数
-      tempSplitNumber = Math.round(max.minus(min).div(estep!).toNumber())
+      tempSplitNumber = Math.round(max.minus(min).div(estep).toNumber())
       //当趋势单调性发生变化时可能出现死循环，需要进行校正
       if ((i - lastIndex) * (tempSplitNumber - splitNumber) < 0) {
         //此处检查单调性变化且未取到理想分段数
@@ -204,8 +204,8 @@ export function getChartScale (
     max = interval.times(splitNumber).plus(min)
   }
   return {
-    max: max!.toNumber(),
-    min: min!.toNumber(),
+    max: max.toNumber(),
+    min: min.toNumber(),
     interval: interval.toNumber(),
   }
 }
